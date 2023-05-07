@@ -171,6 +171,22 @@ const User = require('../models/User');
 
 
 //
+app.get('/api/daily-earnings', async (req, res) => {
+  try {
+    const sales = await User.find().sort({ date: 'asc' });
+    const dailyEarnings = new Map();
+    sales.forEach(sale => {
+      const date = moment(sale.date).format('YYYY-MM-DD');
+      const amount = sale.income;
+      const earnings = dailyEarnings.get(date) || 0;
+      dailyEarnings.set(date, earnings + amount);
+    });
+    res.json([...dailyEarnings]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 router.post("/updateWallet/:userId", async (req, res) => {
   const { userId } = req.params;
   let user = await User.findOne({ userId : userId});

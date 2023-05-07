@@ -77,6 +77,7 @@ withdrawal:{type:Number, default:0},
 selfIncome:{type:Number, default:0},
 teamIncome:{type:Number, default:0},
 level:{type:Number, default:0},
+date: {Date},
  }, {timestamps: true},
 );
 // userSchema.methods.isValidPassword = async function (password) {
