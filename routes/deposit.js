@@ -83,10 +83,20 @@ router.post('/upload', upload.single('image'), async (req, res) => {
 // });
 router.get('/depositusers', async (req, res) => {
   try {
+    const searchDepositQuery = req.query.search; // Get the search query parameter from the request
+
+    // Use a regular expression to perform a case-insensitive search for the given query
+    const searchRegex = new RegExp(searchDepositQuery, 'i');
     const page = parseInt(req.query.page) || 1; // default to page 1
-    const perPage = 200;
+    const perPage = 300;
     const totalUsers = await Deposit.countDocuments();
-    const users = await Deposit.find().skip((page - 1) * perPage).limit(perPage);
+    const users = await Deposit.find({
+      $or: [
+        { name: searchRegex },
+        { userID: searchRegex },
+        { transactionId: searchRegex }
+      ]
+    }).skip((page - 1) * perPage).limit(perPage);
     res.set('x-total-count', totalUsers);
     res.json(users);
   } catch (error) {

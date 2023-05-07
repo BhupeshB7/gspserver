@@ -48,7 +48,8 @@ router.get('/api/users', async (req, res) => {
   const users = await User.find({
     $or: [
       { name: searchRegex },
-      { email: searchRegex }
+      { sponsorId: searchRegex },
+      { userId: searchRegex }
     ]
   });
 
