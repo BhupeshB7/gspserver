@@ -32,8 +32,25 @@ router.post('/login', async (req, res) => {
   res.json({ token });
 });
 
+// router.get('/api/users', async (req, res) => {
+//   const users = await User.find();
+
+//   res.json(users);
+// });
+
 router.get('/api/users', async (req, res) => {
-  const users = await User.find();
+  const searchQuery = req.query.search; // Get the search query parameter from the request
+
+  // Use a regular expression to perform a case-insensitive search for the given query
+  const searchRegex = new RegExp(searchQuery, 'i');
+
+  // Find all users whose name or email matches the search query
+  const users = await User.find({
+    $or: [
+      { name: searchRegex },
+      { email: searchRegex }
+    ]
+  });
 
   res.json(users);
 });
