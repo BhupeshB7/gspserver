@@ -171,7 +171,7 @@ const User = require('../models/User');
 
 
 //
-app.get('/api/daily-earnings', async (req, res) => {
+router.get('/api/daily-earnings', async (req, res) => {
   try {
     const sales = await User.find().sort({ date: 'asc' });
     const dailyEarnings = new Map();
