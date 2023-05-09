@@ -135,51 +135,88 @@ router.post('/withdraw/:userId', async (req, res) => {
   }
 });
 
+// // endpoint for admin to fetch a specific withdrawal request
+// router.get('/admin/withdrawals/', async (req, res) => {
+//   try {
+//     const withdrawalRequest = await WithdrawalReq.find();
+//     if (!withdrawalRequest) {
+//       return res.status(404).json({ error: 'Withdrawal request not found' });
+//     }
+//     res.json(withdrawalRequest);
+//   } catch (error) {
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
+// // Update withdrawal request status
+// router.put('/admin/withdrawals/:id', async (req, res) => {
+//   const { id } = req.params;
+//   const { status } = req.body;
+
+//   try {
+//     const withdrawalReq = await WithdrawalReq.findByIdAndUpdate(
+//       id,
+//       { status },
+//       { new: true }
+//     );
+//     if (!withdrawalReq) {
+//       return res.status(404).json({ error: 'Withdrawal request not found' });
+//     }
+//     res.json(withdrawalReq);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
+// // define the DELETE route for deleting a withdrawal request
+// router.delete('/withdrawals/:id', async (req, res) => {
+//   const id = req.params.id;
+//   try {
+//     // find and delete the withdrawal request with the given ID
+//     const deletedRequest = await WithdrawalReq.findByIdAndDelete(id);
+//     // send response with status 200 and the deleted request data
+//     res.status(200).json(deletedRequest);
+//   } catch (error) {
+//     console.error(error);
+//     // send response with status 500 and an error message
+//     res.status(500).json({ message: 'Unable to delete withdrawal request.' });
+//   }
+// });
 // endpoint for admin to fetch a specific withdrawal request
-router.get('/admin/withdrawals/', async (req, res) => {
+router.get('/withdrawals/:userId', async (req, res) => {
+  const {userId} = req.params;
   try {
-    const withdrawalRequest = await WithdrawalReq.find();
+    const withdrawalRequest = await WithdrawalReq.find({userId: userId});
     if (!withdrawalRequest) {
       return res.status(404).json({ error: 'Withdrawal request not found' });
     }
     res.json(withdrawalRequest);
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json(error);
   }
 });
-// Update withdrawal request status
-router.put('/admin/withdrawals/:id', async (req, res) => {
-  const { id } = req.params;
-  const { status } = req.body;
 
+// endpoint for admin to fetch all withdrawal requests
+router.get('/withdrawals', async (req, res) => {
   try {
-    const withdrawalReq = await WithdrawalReq.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true }
-    );
-    if (!withdrawalReq) {
+    const withdrawalRequests = await WithdrawalReq.find();
+    res.json(withdrawalRequests);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+// endpoint for admin to update the status and transaction number of a withdrawal request
+router.put('/withdrawals/:id', async (req, res) => {
+  const { id } = req.params;
+  const { status, transactionNumber } = req.body;
+  try {
+    const withdrawalRequest = await WithdrawalReq.findByIdAndUpdate(id, { status, transactionNumber }, { new: true });
+    if (!withdrawalRequest) {
       return res.status(404).json({ error: 'Withdrawal request not found' });
     }
-    res.json(withdrawalReq);
+    res.json(withdrawalRequest);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json(error);
   }
 });
-// define the DELETE route for deleting a withdrawal request
-router.delete('/withdrawals/:id', async (req, res) => {
-  const id = req.params.id;
-  try {
-    // find and delete the withdrawal request with the given ID
-    const deletedRequest = await WithdrawalReq.findByIdAndDelete(id);
-    // send response with status 200 and the deleted request data
-    res.status(200).json(deletedRequest);
-  } catch (error) {
-    console.error(error);
-    // send response with status 500 and an error message
-    res.status(500).json({ message: 'Unable to delete withdrawal request.' });
-  }
-});
-
 module.exports = router;
