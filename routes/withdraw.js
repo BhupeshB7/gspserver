@@ -113,7 +113,7 @@ router.post('/withdraw/:userId', async (req, res) => {
   else if(amount < 200){
     return res.status(400).json({ error: 'Minimum withdrawal amount is 500 Rs' });
   } else  if (user.balance < amount) {
-    return res.status(400).json({ error: 'Insufficient balance' });
+    return res.status(400).json({ error: 'Insufficient balance in wallet' });
   }
   else if (amount === 200) {
     // check if user balance is sufficient for the withdrawal
