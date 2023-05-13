@@ -4,6 +4,20 @@ const User = require("../models/User");
 
 const router = express.Router();
 
+
+// Update all user names
+// router.put('/userWalletUpdate', auth, async (req, res) => {
+//   try {
+//     await User.updateMany({}, { income: 0 });
+//     await User.updateMany({}, { balance: 0 });
+//     await User.updateMany({}, { selfIncome: 0 });
+//     await User.updateMany({}, { teamIncome: 0 });
+//     res.sendStatus(200);
+//   } catch (error) {
+//     console.error('Failed to update user names', error);
+//     res.sendStatus(500);
+//   }
+// });
 router.get("/profile", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
