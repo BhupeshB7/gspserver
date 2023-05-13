@@ -24,7 +24,11 @@ router.post('/upload', upload.single('image'), async (req, res) => {
     if (!fs.existsSync(imagePath)) {
       throw new Error('File not found');
     }
-
+ // Check if email already exists
+ const transaction = await Deposit.findOne({ transactionId });
+ if (transaction) {
+   throw new Error('Transacion Id already Exists!');
+ }
     const user = new Deposit({ name, transactionId, userID, image: imagePath });
     await user.save();
     res.json({ message: 'Image uploaded successfully' });
@@ -90,6 +94,7 @@ router.get('/depositusers', async (req, res) => {
     const page = parseInt(req.query.page) || 1; // default to page 1
     const perPage = 300;
     const totalUsers = await Deposit.countDocuments();
+    
     const users = await Deposit.find({
       $or: [
         { name: searchRegex },
