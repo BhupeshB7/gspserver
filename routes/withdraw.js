@@ -60,7 +60,8 @@ const router = express.Router();
 router.post('/withdraw/:userId', async (req, res) => {
   const { userId } = req.params;
   const { amount, GPay, IfscCode, accountNo } = req.body;
-
+  
+  const user = await User.findOne({ userId: userId });
   // check if the withdrawal amount is greater than 0
   if (amount <= 0) {
     return res.status(400).json({ error: 'Withdrawal amount should be greater than 0' });
@@ -69,7 +70,6 @@ router.post('/withdraw/:userId', async (req, res) => {
   // check if the withdrawal amount is greater than or equal to 500
   if (amount >= 500) {
     // get user from database
-    const user = await User.findOne({ userId: userId });
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -112,12 +112,12 @@ router.post('/withdraw/:userId', async (req, res) => {
    
   else if(amount < 200){
     return res.status(400).json({ error: 'Minimum withdrawal amount is 500 Rs' });
+  } else  if (user.balance < amount) {
+    return res.status(400).json({ error: 'Insufficient balance' });
   }
   else if (amount === 200) {
     // check if user balance is sufficient for the withdrawal
-    if (user.balance < amount) {
-      return res.status(400).json({ error: 'Insufficient balance' });
-    }
+   
     // create a new withdrawal request
     const withdrawalRequest = new WithdrawalReq({
       userId,
