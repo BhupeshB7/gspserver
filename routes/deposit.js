@@ -27,7 +27,7 @@ router.post('/upload', upload.single('image'), async (req, res) => {
  // Check if email already exists
  const transaction = await Deposit.findOne({ transactionId });
  if (transaction) {
-   throw new Error('Transacion Id already Exists!');
+  return res.status(400).json({ error: ' transactionId already exists' });
  }
     const user = new Deposit({ name, transactionId, userID, image: imagePath });
     await user.save();
