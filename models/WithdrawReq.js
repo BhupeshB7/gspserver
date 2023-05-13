@@ -25,9 +25,11 @@ const WithdrawalRequestSchema = new mongoose.Schema({
   GPay:{
     type: String,
     default:0,
+    unique:true,
   },
   transactionNumber:{
-    type:String
+    type:String,
+    unique: true,
   },
   createdAt: {
     type: Date,
