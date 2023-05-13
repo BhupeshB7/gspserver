@@ -56,6 +56,9 @@ const userSchema = new mongoose.Schema({
   aadhar: {
     type: String,
   },
+  accountHolderName: {
+    type: String,
+  },
   tokens: [{
     token: {
       type: String,

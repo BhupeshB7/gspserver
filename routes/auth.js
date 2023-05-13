@@ -6,9 +6,17 @@ const User = require("../models/User");
 const router = express.Router();
 
 router.post("/login", async (req, res) => {
-  const { userId, password } = req.body;
+  const { userId, password, captchaResponse} = req.body;
+ // Verify the captcha response with the captcha service's API
+ const captchaSecretKey = '6Lc1-wgmAAAAAFTFsy_Hkk_a33hV94dP1XNwTzig';
+ const captchaVerifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${captchaSecretKey}&response=${captchaResponse}`;
+
 
   try {
+    const response = await axios.post(captchaVerifyUrl);
+    const { success } = response.data;
+    if(success){
+      
     // Check if user exists
     const user = await User.findOne({ userId });
     if (!user) {
@@ -21,6 +29,7 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid Password!" });
     }
 
+   
     // Create and return JWT token
     const payload = {
       user: {
@@ -31,6 +40,7 @@ router.post("/login", async (req, res) => {
       expiresIn: "1h",
     });
     res.json({ token });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server error" });

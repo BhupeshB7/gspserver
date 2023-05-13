@@ -40,6 +40,9 @@ router.post('/profileUpdate', auth, async (req, res) => {
     if (req.body.name) {
       user.name = req.body.name.trim();
     }
+    if (req.body.accountHolderName) {
+      user.accountHolderName = req.body.accountHolderName.trim();
+    }
 
     if (req.body.bio) {
       user.bio = req.body.bio.trim();
