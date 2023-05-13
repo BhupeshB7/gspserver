@@ -41,6 +41,9 @@ router.post("/login", async (req, res) => {
       expiresIn: "1h",
     });
     res.json({ token });
+    }else{
+       // Return an error response indicating invalid captcha
+       res.status(400).json({ error: 'Invalid captcha' });
     }
   } catch (error) {
     console.log(error);
