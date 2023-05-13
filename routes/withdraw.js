@@ -108,7 +108,12 @@ router.post('/withdraw/:userId', async (req, res) => {
 //   user.balance -= amount;
 //   await user.save();
     return res.json({ success: true });
-  } else if (amount === 200) {
+  } 
+   
+  else if(amount < 200){
+    return res.status(400).json({ error: 'Minimum withdrawal amount is 500 Rs' });
+  }
+  else if (amount === 200) {
     // create a new withdrawal request
     const withdrawalRequest = new WithdrawalReq({
       userId,
@@ -130,7 +135,8 @@ router.post('/withdraw/:userId', async (req, res) => {
   user.balance -= amount;
   await user.save();
     return res.json({ success: true });
-  } else {
+  }
+  else {
     return res.status(400).json({ error: 'Minimum withdrawal amount is 500 Rs' });
   }
 });
