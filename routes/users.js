@@ -18,6 +18,36 @@ const router = express.Router();
 //     res.sendStatus(500);
 //   }
 // });
+
+// router.post('/userWalletUpdate/:userId', auth, async (req, res) => {
+//   const userId = req.params;
+//   try {
+//     await User.findOne({userId}, { income: 146 });
+//     await User.findOne({userId}, { balance: 146 });
+//     await User.findOne({userId}, { selfIncome: 120 });
+//     await User.findOne({userId}, { teamIncome: 26 });
+//     res.sendStatus(200);
+//   } catch (error) {
+//     console.error('Failed to update user names', error);
+//     res.sendStatus(500);
+//   }
+// });
+
+// router.post("/userWalletUpdate/:userId", async (req, res) => {
+//   const { userId } = req.params;
+//   let user = await User.findOne({ userId : userId});
+//   if (!user) {
+//     // console.log(`User with ID ${userId} not found`);
+//     return res.status(404).send("User not found");
+//   }
+//   // console.log(`User found: ${JSON.stringify(user)}`);
+//   user.balance === 146;
+//   user.income === 146;
+//   user.selfIncome === 120;
+//   user.teamIncome === 26;
+//   await user.save();
+// })
+
 router.get("/profile", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
