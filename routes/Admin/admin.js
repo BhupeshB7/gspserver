@@ -81,8 +81,8 @@ const countActiveItems = async (items) => {
 
 router.get("/count-active-items", async (req, res) => {
   const items = await User.find();
-  const numberOfActive = await countActiveItems(items);
-  res.json({ numberOfActive });
+  const numberOfActiveUser = await countActiveItems(items);
+  res.json({ numberOfActiveUser });
 });
 // Get all users (admin only)
 // router.get('/users', adminAuth, async (req, res) => {
