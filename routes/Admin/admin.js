@@ -71,6 +71,19 @@ router.delete('/api/users/:id', async (req, res) => {
   res.json({ message: 'User deleted successfully' });
 });
 
+
+const isActive = (item) => item.is_active;
+
+const countActiveItems = async (items) => {
+  const activeItems = await items.filter(isActive);
+  return activeItems.length;
+};
+
+router.get("/count-active-items", async (req, res) => {
+  const items = await User.find();
+  const numberOfActive = await countActiveItems(items);
+  res.json({ numberOfActive });
+});
 // Get all users (admin only)
 // router.get('/users', adminAuth, async (req, res) => {
 //     try {
