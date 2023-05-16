@@ -33,20 +33,44 @@ const router = express.Router();
 //   }
 // });
 
-// router.post("/userWalletUpdate/:userId", async (req, res) => {
+// router.post("/userWalletUpdating/:userId", async (req, res) => {
 //   const { userId } = req.params;
-//   let user = await User.findOne({ userId : userId});
-//   if (!user) {
-//     // console.log(`User with ID ${userId} not found`);
-//     return res.status(404).send("User not found");
+//   try{
+//     let user = await User.findOne({ userId : userId});
+//     if (!user) {
+//       // console.log(`User with ID ${userId} not found`);
+//       return res.status(404).send("User not found");
+//     }
+//     // console.log(`User found: ${JSON.stringify(user)}`);
+//     user.balance === 146;
+//     user.income === 146;
+//     user.selfIncome === 120;
+//     user.teamIncome === 26;
+//     await user.save();
+//   }catch(error){
+//     res.status(500).json({error:'Internal server error'})
 //   }
-//   // console.log(`User found: ${JSON.stringify(user)}`);
-//   user.balance === 146;
-//   user.income === 146;
-//   user.selfIncome === 120;
-//   user.teamIncome === 26;
-//   await user.save();
+
 // })
+router.post("/userWalletUpdating/:userId", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    let user = await User.findOne({ userId: userId });
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    user.balance = 90;
+    user.income = 90;
+    user.selfIncome = 90;
+    user.teamIncome = 0;
+    user.withdrawal = 0;
+    await user.save();
+    res.status(200).send("User wallet updated successfully");
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 router.get("/profile", auth, async (req, res) => {
   try {
