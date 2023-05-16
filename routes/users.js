@@ -130,4 +130,42 @@ if (req.body.aadhar) {
 });
 
 
+
+// const isActive = (item) => item.is_active;
+
+// const countActiveItems = async (items) => {
+//   const activeItems = await items.filter(isActive);
+//   return activeItems.length;
+// };
+
+// router.get("/count-active/:userId", async (req, res) => {
+//   const { userId } = req.params;
+  
+//   try{
+//     let user = await User.findOne({ userId : userId});
+//     if (!user) {
+//       // console.log(`User with ID ${userId} not found`);
+//       return res.status(404).send("User not found");
+//     }
+//     const sponsor = await User.findOne({userId: user.sponsorId});
+//     if(sponsor){
+//       const numberOfActiveUser = await countActiveItems(sponsor);
+//       res.json({ numberOfActiveUser });
+    
+//     }
+//     // const sponsor1  = await User.find({userId:sponsor.sponsorId});
+//     // if(sponsor1){
+//     //   const numberOfActiveUser1 = await countActiveItems(sponsor1);
+//     //   res.status(200).json({ numberOfActiveUser1 });
+//     // }
+//     // const sponsor2  = await User.find({userId:sponsor1.sponsorId});
+//     //   if(sponsor2){
+//     //     const numberOfActiveUser2 = await countActiveItems(sponsor2);
+//     //     res.json({ numberOfActiveUser2 });
+      
+//     //  }
+//   }catch(error){
+//     res.status(500).json({error:"intenal server error"});
+//   }
+// });
 module.exports = router;
