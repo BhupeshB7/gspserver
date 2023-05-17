@@ -214,7 +214,7 @@ router.post("/updateWallet/:userId", async (req, res) => {
     let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
     console.log("sponsor 0f sponsor Account");
     console.log(sponsor2);
-    let sponsor2Count = await User.countDocuments({ userId: sponsor.sponsorId });
+    let sponsor2Count = await User.countDocuments({ userId: user.sponsorId });
     if (sponsor2 && sponsor2Count >=2) {
       // console.log(`Second sponsor found: ${JSON.stringify(sponsor2)}`);
       sponsor2.balance +=3;
@@ -222,10 +222,10 @@ router.post("/updateWallet/:userId", async (req, res) => {
       sponsor2.income += 3;
       await sponsor2.save();
       // onsole.log(`Account increased for second sponsor ${sponsor2._id}: ${sponsor2.income}`);
-      let sponsor3 = await User.findOne({ userId: sponsor2.sponsorId });
+      let sponsor3 = await User.findOne({ userId: user.sponsorId });
       // console.log("sponsor2 0f sponsor Account");
       // console.log(sponsor3);
-      let sponsor3Count = await User.countDocuments({ userId: sponsor2.sponsorId });
+      let sponsor3Count = await User.countDocuments({ userId: user.sponsorId });
       if (sponsor3 && sponsor3Count >=3) {
         // console.log(`Third sponsor found: ${JSON.stringify(sponsor3)}`);
         sponsor3.balance +=2;
@@ -234,19 +234,20 @@ router.post("/updateWallet/:userId", async (req, res) => {
         await sponsor3.save();
         // console.log(`Account increased for third sponsor ${sponsor3._id}: ${sponsor3.income}`);
         //
-        let sponsor4 = await User.findOne({userId: sponsor3.sponsorId});
-        let sponsor4Count = await User.countDocuments({ userId: sponsor3.sponsorId });
+        let sponsor4 = await User.findOne({userId: user.sponsorId});
+        let sponsor4Count = await User.countDocuments({ userId: user.sponsorId });
         if(sponsor4 && sponsor4Count>=4){
           // console.log(`Fourth sponsor found: &{JSON.stringify(sponsor4)} `)
           // console.log(`Fourth sponsor found: ${sponsor4.userId}`);
-          sponsor4.balance +=2;
-          sponsor4.teamIncome +=2;
-          sponsor4.income +=2;
+          sponsor4.balance +=1;
+          sponsor4.teamIncome +=1;
+          sponsor4.income +=1;
           await sponsor4.save();
           // console.log(`Account increased for third sponsor ${sponsor4.userId}: ${sponsor4.income}`);
           //
-          let sponsor5 = await User.findOne({userId: sponsor4.sponsorId});
-          if(sponsor5){
+          let sponsor5 = await User.findOne({userId: user.sponsorId});
+          let sponsor5Count = await User.countDocuments({ userId: user.sponsorId });
+          if(sponsor5 && sponsor4Count>=5){
             // console.log(`Fourth sponsor found: &{JSON.stringify(sponsor4)} `)
             // console.log(`Fifth sponsor found: ${sponsor5.userId}`);
             sponsor5.balance +=1;

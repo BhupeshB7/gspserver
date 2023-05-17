@@ -172,20 +172,21 @@ router.post('/activeuser/:userId', async (req, res) => {
     // Count the number of active users based on sponsorId
     // let spnosorCount = await User.countDocuments({ userId: user.sponsorId, is_active: true });
     const sponsorCount = await User.countDocuments({ sponsorId: user.userId, is_active: true });
+    const sponsor1 = await User.find({ sponsorId: user.userId, is_active: true });
     const sponsorTotalCount = await User.countDocuments({ sponsorId: user.userId });
 
     // Count the number of active users based on sponsor.sponsorId
-    const sponsor2Count = await User.countDocuments({userId: sponsor.sponsorId, is_active: true });
+    const sponsor2Count = await User.countDocuments({sponsorId: sponsorCount, is_active: true });
 
     // Count the number of active users based on sponsor2.sponsorId
-    const sponsor3Count = await User.countDocuments({ sponsorId: sponsor2Count?.sponsorId, is_active: true });
+    const sponsor3Count = await User.countDocuments({ sponsorId: sponsor2Count, is_active: true });
 
     // Count the number of active users based on sponsor3.sponsorId
     const sponsor4Count = await User.countDocuments({ sponsorId: sponsor3Count?.sponsorId, is_active: true });
 
     const data = {
       // activeUser: user,
-      // sponsor,
+      sponsor1,
       sponsorCount,
       sponsorTotalCount,
       sponsor2Count,
