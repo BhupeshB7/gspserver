@@ -52,6 +52,7 @@ const router = express.Router();
 //   }
 
 // })
+//Manually update user wallet through API
 router.post("/userWalletUpdating/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
@@ -59,17 +60,114 @@ router.post("/userWalletUpdating/:userId", async (req, res) => {
     if (!user) {
       return res.status(404).send("User not found");
     }
-    user.balance = 60;
-    user.income = 60;
-    user.selfIncome = 60;
+    user.balance = 4;
+    user.income = 204;
+    user.selfIncome = 180;
     user.teamIncome = 0;
-    user.withdrawal = 0;
+    user.withdrawal = 24;
     await user.save();
     res.status(200).send("User wallet updated successfully");
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+// Example using Express.js
+// router.get('/team/:userId', async (req, res) => {
+//   const { userId } = req.params;
+// const teamUser = await User.findOne({userId:userId});
+// if(!teamUser){
+//   return res.status(400).json({error:'user not Found'});
+// }
+//   try {
+//     const teamStructure = await getUserTeam(userId);
+//     res.json(teamStructure);
+//   } catch (error) {
+//     console.error('Error fetching team structure:', error);
+//     res.status(500).json({ error: 'An error occurred while fetching the team structure.' });
+//   }
+// });
+
+// // Recursive function to fetch the user's team structure
+// async function getUserTeam(userId) {
+//   try {
+//     const user = await User.find({userId:userId}).select('userId name mobile').lean();
+//     // if (!user) {
+//     //   return null;
+//     // }
+//     // const teamStructure = {
+//     //   userId: userId,
+//     //   // name: name,
+//     //   mobile: mobile,
+//     //   downline: [],
+//     // };
+//     // const downlineUser = await User.find({ userId: userId }).select('mobile').lean();
+//     const teamStructure = {
+//       userId: userId,
+//       // name: name,
+//       // mobile: mobile,
+//       downline: [],
+//     };
+//     const downlineUsers = await User.find({ sponsorId: userId }).lean().limit(2);
+//     for (const downlineUser of downlineUsers) {
+//       const downlineTeam = await getUserTeam(downlineUser.userId);
+//       teamStructure.downline.push(downlineTeam);
+//     }
+ 
+
+//     return teamStructure;
+//   } catch (error) {
+//     console.error('Error fetching user:', error);
+//     throw error;
+//   }
+// }
+router.get('/team/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const teamStructure = await getUserTeam(userId);
+    res.json(teamStructure);
+  } catch (error) {
+    console.error('Error fetching team structure:', error);
+    res.status(500).json({ error: 'An error occurred while fetching the team structure.' });
+  }
+});
+
+// Recursive function to fetch the user's team structure
+async function getUserTeam(userId) {
+  try {
+    // const user = await User.findOne({ userId }).lean();
+    const user = await User.findOne({ userId }).select('userId name mobile is_active').lean();
+
+    if (!user) {
+      return null;
+    }
+const activeStatus = user.is_active ? 'active':'not active'
+    const teamStructure = {
+      userId: user.userId,
+      name: user.name,
+      mobile: user.mobile,
+      status: activeStatus,
+      downline: [],
+    };
+
+    // const downlineUsers = await User.find({ sponsorId: userId }).lean();
+    // for (const downlineUser of downlineUsers) {
+    //   const downlineTeam = await getUserTeam(downlineUser.userId);
+    //   teamStructure.downline.push(downlineTeam);
+    // }
+    const downlineUsers = await User.find({ sponsorId: userId }).lean();
+const downlinePromises = downlineUsers.map((downlineUser) => getUserTeam(downlineUser.userId));
+const downlineTeam = await Promise.all(downlinePromises);
+teamStructure.downline = downlineTeam;
+
+
+    return teamStructure;
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    throw error;
+  }
+}
 
 
 router.get("/profile", auth, async (req, res) => {
@@ -203,5 +301,91 @@ router.post('/activeuser/:userId', async (req, res) => {
   }
 });
 
+// API route to get a user's sponsors
+router.get('/sponsors/:userId/', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Find the user's sponsor
+    const user = await User.findOne({ userId });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Find all sponsors
+    // const sponsors = await User.find({ sponsorId: user.userId });
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+// Route to handle the request
+// router.get('/find-matching-sponsors/:userId', async (req, res) => {
+//   const { userId } = req.params;
+
+//   try {
+//       // Find all users whose sponsorId matches the given userId
+//       const matchedUsers = await User.find({ sponsorId: userId });
+
+//       // Extract the sponsorIds from the matched users
+//       const sponsorIds = matchedUsers.map(user => user.sponsorId);
+  
+//       // Find all users whose sponsorId is in the sponsorIds array
+//       const matchedUsers2 = await User.find({ sponsorId: { $in: sponsorIds } });
+  
+//       // Extract the sponsorIds from the second set of matched users
+//       const sponsorIds2 = matchedUsers2.map(user => user.sponsorId);
+
+//       // Find all users whose sponsorId is in the sponsorIds2 array
+//       const matchedUsers3 = await User.find({ sponsorId: { $in: sponsorIds2 } });
+  
+//       // Extract the sponsorIds from the third set of matched users
+//       const sponsorIds3 = matchedUsers3.map(user => user.sponsorId);
+  
+//       res.json({ sponsorIds: sponsorIds3 });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Server error' });
+//   }
+// });
+
+
+
+
+
+// API route to get different sponsors based on all sponsors
+// router.get('/api/users/different-sponsors/:userId', async (req, res) => {
+//   try {
+//     const { userId } = req.params;
+
+   
+//     // Find the user's sponsor
+//     const user = await User.findOne({ userId });
+
+//     if (!user) {
+//       return res.status(404).json({ error: 'User not found' });
+//     }
+
+//     // Find all sponsors
+//     const sponsors = await User.find({ sponsorId: user.userId });
+
+//     if (sponsors.length === 0) {
+//       return res.json([]);
+//     }
+
+//     // Find different sponsors based on all sponsors
+//     const differentSponsors = await User.find({
+//       sponsorId: { $nin: sponsors.map((sponsor) => sponsor.userId) },
+//     });
+
+//     res.json(differentSponsors);
+//   } catch (error) {
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
 
 module.exports = router;
