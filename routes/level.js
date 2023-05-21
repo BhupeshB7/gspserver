@@ -194,6 +194,8 @@ router.post("/updateWallet/:userId", async (req, res) => {
     // console.log(`User with ID ${userId} not found`);
     return res.status(404).send("User not found");
   }
+  // let spon = await User.find({sponsorId: userId}).select('userId name sponsorId');
+  // console.log(`print all data: ${spon}`)
   // console.log(`User found: ${JSON.stringify(user)}`);
   user.balance += 30;
   user.income += 30;
@@ -201,8 +203,8 @@ router.post("/updateWallet/:userId", async (req, res) => {
   await user.save();
   // console.log(`Account increased for user ${userId}: ${user.income}`);
   let sponsor = await User.findOne({ userId: user.sponsorId });
-  console.log("sponsor Account");
-  console.log(sponsor);
+  // console.log("sponsor Account");
+  // console.log(sponsor);
   let spnosorCount = await User.countDocuments({ userId: user.sponsorId });
   if (sponsor && spnosorCount>=1) {
     // console.log(`Sponsor found: ${JSON.stringify(sponsor)}`);
@@ -212,53 +214,59 @@ router.post("/updateWallet/:userId", async (req, res) => {
     await sponsor.save();
     // console.log(`Account increased for sponsor ${sponsor._id}: ${sponsor.income}`);
     let sponsor2 = await User.findOne({ userId: sponsor.sponsorId });
-    console.log("sponsor 0f sponsor Account");
-    console.log(sponsor2);
-    let sponsor2Count = await User.countDocuments({ userId: user.sponsorId });
-    if (sponsor2 && sponsor2Count >=2) {
-      // console.log(`Second sponsor found: ${JSON.stringify(sponsor2)}`);
-      sponsor2.balance +=3;
-      sponsor2.teamIncome +=3;  
-      sponsor2.income += 3;
-      await sponsor2.save();
-      // onsole.log(`Account increased for second sponsor ${sponsor2._id}: ${sponsor2.income}`);
-      let sponsor3 = await User.findOne({ userId: user.sponsorId });
-      // console.log("sponsor2 0f sponsor Account");
-      // console.log(sponsor3);
-      let sponsor3Count = await User.countDocuments({ userId: user.sponsorId });
-      if (sponsor3 && sponsor3Count >=3) {
-        // console.log(`Third sponsor found: ${JSON.stringify(sponsor3)}`);
-        sponsor3.balance +=2;
-        sponsor3.teamIncome +=2;
-        sponsor3.income += 2;
-        await sponsor3.save();
-        // console.log(`Account increased for third sponsor ${sponsor3._id}: ${sponsor3.income}`);
-        //
-        let sponsor4 = await User.findOne({userId: user.sponsorId});
-        let sponsor4Count = await User.countDocuments({ userId: user.sponsorId });
-        if(sponsor4 && sponsor4Count>=4){
-          // console.log(`Fourth sponsor found: &{JSON.stringify(sponsor4)} `)
-          // console.log(`Fourth sponsor found: ${sponsor4.userId}`);
-          sponsor4.balance +=1;
-          sponsor4.teamIncome +=1;
-          sponsor4.income +=1;
-          await sponsor4.save();
-          // console.log(`Account increased for third sponsor ${sponsor4.userId}: ${sponsor4.income}`);
+    // console.log("sponsor 0f sponsor Account");
+    // console.log(sponsor2);
+    // console.log(sponsor2.userId);
+    // console.log(sponsor2[0].userId);
+    // let sponsor2Count = await User.find({ sponsorId: sponsor2[0].userId}).distinct('userId');
+    let sponsor2CountUser = await User.countDocuments({ sponsorId: sponsor2.userId});
+    //  console.log(`Sponsor2Count= ${sponsor2Count}`)
+    //  console.log(`Sponsor2CountUser= ${sponsor2CountUser}`)
+      if (sponsor2 && sponsor2CountUser >2 ) {
+        // console.log(`Second sponsor found: ${JSON.stringify(sponsor2)}`);
+        sponsor2.teamIncome +=3;  
+        sponsor2.balance +=3;
+        sponsor2.income += 3;
+        await sponsor2.save();
+        // onsole.log(`Account increased for second sponsor ${sponsor2._id}: ${sponsor2.income}`);
+        let sponsor3 = await User.findOne({ userId: user.sponsorId });
+        // console.log("sponsor2 0f sponsor Account");
+        // console.log(sponsor3);
+        let sponsor3Count = await User.countDocuments({  sponsorId: sponsor3.userId});
+        if (sponsor3 && sponsor3Count >3) {
+          // console.log(`Third sponsor found: ${JSON.stringify(sponsor3)}`);
+          sponsor3.balance +=2;
+          sponsor3.teamIncome +=2;
+          sponsor3.income += 2;
+          await sponsor3.save();
+          // console.log(`Account increased for third sponsor ${sponsor3._id}: ${sponsor3.income}`);
           //
-          let sponsor5 = await User.findOne({userId: user.sponsorId});
-          let sponsor5Count = await User.countDocuments({ userId: user.sponsorId });
-          if(sponsor5 && sponsor4Count>=5){
+          let sponsor4 = await User.findOne({userId: user.sponsorId});
+          let sponsor4Count = await User.countDocuments({  sponsorId: sponsor4.userId });
+          if(sponsor4 && sponsor4Count>4){
             // console.log(`Fourth sponsor found: &{JSON.stringify(sponsor4)} `)
-            // console.log(`Fifth sponsor found: ${sponsor5.userId}`);
-            sponsor5.balance +=1;
-            sponsor5.teamIncome +=1;
-            sponsor5.income +=1;
-            await sponsor5.save();
-            // console.log(`Account increased for fifth sponsor ${sponsor5.userId}: ${sponsor5.income}`);
-          }  
+            // console.log(`Fourth sponsor found: ${sponsor4.userId}`);
+            sponsor4.balance +=1;
+            sponsor4.teamIncome +=1;
+            sponsor4.income +=1;
+            await sponsor4.save();
+            // console.log(`Account increased for third sponsor ${sponsor4.userId}: ${sponsor4.income}`);
+            //
+            let sponsor5 = await User.findOne({userId: user.sponsorId});
+            let sponsor5Count = await User.countDocuments({  sponsorId: sponsor3.userId });
+            if(sponsor5 && sponsor5Count>=5){
+              // console.log(`Fourth sponsor found: &{JSON.stringify(sponsor4)} `)
+              // console.log(`Fifth sponsor found: ${sponsor5.userId}`);
+              sponsor5.balance +=1;
+              sponsor5.teamIncome +=1;
+              sponsor5.income +=1;
+              await sponsor5.save();
+              // console.log(`Account increased for fifth sponsor ${sponsor5.userId}: ${sponsor5.income}`);
+            }  
+          }
         }
       }
-    }
+  
   }
   res.send("Account increased successfully");
 })
