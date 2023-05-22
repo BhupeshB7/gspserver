@@ -81,6 +81,10 @@ selfIncome:{type:Number, default:0},
 teamIncome:{type:Number, default:0},
 rewards:{type:Number, default:0},
 level:{type:Number, default:0},
+activationTime: {
+  type: Date,
+  default: null
+},
 date: {Date},
  }, {timestamps: true},
 );

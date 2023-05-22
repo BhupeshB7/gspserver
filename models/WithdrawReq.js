@@ -31,6 +31,9 @@ const WithdrawalRequestSchema = new mongoose.Schema({
     type:String,
     unique: true,
   },
+  accountHolderName: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

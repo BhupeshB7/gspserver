@@ -122,6 +122,59 @@ router.post("/userWalletUpdating/:userId", async (req, res) => {
 //     throw error;
 //   }
 // }
+
+  // Latest team strructure code 
+// router.get('/team/:userId', async (req, res) => {
+//   const { userId } = req.params;
+
+//   try {
+//     const teamStructure = await getUserTeam(userId);
+//     res.json(teamStructure);
+//   } catch (error) {
+//     console.error('Error fetching team structure:', error);
+//     res.status(500).json({ error: 'An error occurred while fetching the team structure.' });
+//   }
+// });
+
+// // Recursive function to fetch the user's team structure
+// async function getUserTeam(userId) {
+//   try {
+//     // const user = await User.findOne({ userId }).lean();
+//     const user = await User.findOne({ userId }).select('userId name mobile is_active').lean();
+
+//     if (!user) {
+//       return null;
+//     }
+// const activeStatus = user.is_active ? 'active':'not active'
+//     const teamStructure = {
+//       userId: user.userId,
+//       name: user.name,
+//       mobile: user.mobile,
+//       status: activeStatus,
+//       downline: [],
+//     };
+
+//     // const downlineUsers = await User.find({ sponsorId: userId }).lean();
+//     // for (const downlineUser of downlineUsers) {
+//     //   const downlineTeam = await getUserTeam(downlineUser.userId);
+//     //   teamStructure.downline.push(downlineTeam);
+//     // }
+//     const downlineUsers = await User.find({ sponsorId: userId }).lean();
+// const downlinePromises = downlineUsers.map((downlineUser) => getUserTeam(downlineUser.userId));
+// const downlineTeam = await Promise.all(downlinePromises);
+// teamStructure.downline = downlineTeam;
+
+
+//     return teamStructure;
+//   } catch (error) {
+//     console.error('Error fetching user:', error);
+//     throw error;
+//   }
+// }
+// latest team structure code end 
+
+
+// Get user's team structure
 router.get('/team/:userId', async (req, res) => {
   const { userId } = req.params;
 
@@ -137,31 +190,44 @@ router.get('/team/:userId', async (req, res) => {
 // Recursive function to fetch the user's team structure
 async function getUserTeam(userId) {
   try {
-    // const user = await User.findOne({ userId }).lean();
     const user = await User.findOne({ userId }).select('userId name mobile is_active').lean();
 
     if (!user) {
       return null;
     }
-const activeStatus = user.is_active ? 'active':'not active'
+
+    const activeStatus = user.is_active ? 'active' : 'not active';
     const teamStructure = {
       userId: user.userId,
       name: user.name,
       mobile: user.mobile,
       status: activeStatus,
+      downlineCount: 0,
+      activeDownlineCount: 0,
+      allUsersCount:0,
+      activeUsersCount :0,
       downline: [],
     };
 
     // const downlineUsers = await User.find({ sponsorId: userId }).lean();
-    // for (const downlineUser of downlineUsers) {
-    //   const downlineTeam = await getUserTeam(downlineUser.userId);
-    //   teamStructure.downline.push(downlineTeam);
-    // }
-    const downlineUsers = await User.find({ sponsorId: userId }).lean();
-const downlinePromises = downlineUsers.map((downlineUser) => getUserTeam(downlineUser.userId));
-const downlineTeam = await Promise.all(downlinePromises);
-teamStructure.downline = downlineTeam;
+    // const downlinePromises = downlineUsers.map((downlineUser) => getUserTeam(downlineUser.userId));
+    // const downlineTeam = await Promise.all(downlinePromises);
 
+    // teamStructure.downline = downlineTeam;
+    // teamStructure.downlineCount = downlineTeam.length;
+    // teamStructure.activeDownlineCount = downlineTeam.reduce((count, downline) => count + (downline.status === 'active' ? 1 : 0), 0);
+
+    const downlineUsers = await User.find({ sponsorId: userId }).lean();
+    const downlinePromises = downlineUsers.map((downlineUser) => getUserTeam(downlineUser.userId));
+    const downlineTeam = await Promise.all(downlinePromises);
+
+    teamStructure.downline = downlineTeam;
+    teamStructure.downlineCount = downlineTeam.length;
+    teamStructure.activeDownlineCount = downlineTeam.reduce((count, downline) => count + (downline.status === 'active' ? 1 : 0), 0);
+
+    // Count number of all users and active users
+    teamStructure.allUsersCount = downlineTeam.reduce((count, downline) => count + downline.allUsersCount + 1, 0);
+    teamStructure.activeUsersCount = downlineTeam.reduce((count, downline) => count + downline.activeUsersCount + (downline.status === 'active' ? 1 : 0), 0);
 
     return teamStructure;
   } catch (error) {
@@ -169,6 +235,7 @@ teamStructure.downline = downlineTeam;
     throw error;
   }
 }
+
 
 
 router.get("/profile", auth, async (req, res) => {

@@ -55,7 +55,18 @@ router.get('/api/users', async (req, res) => {
 
   res.json(users);
 });
+// Update user
+router.put('/active/:id', async (req, res) => {
+  try {
+    const { is_active, activationTime } = req.body;
+    const user = await User.findByIdAndUpdate(req.params.id, { is_active, activationTime }, { new: true });
 
+    res.json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 router.delete('/api/users/:id', async (req, res) => {
   const { id } = req.params;
 

@@ -59,7 +59,7 @@ const router = express.Router();
 // endpoint for withdrawal request
 router.post('/withdraw/:userId', async (req, res) => {
   const { userId } = req.params;
-  const { amount, GPay, IfscCode, accountNo } = req.body;
+  const { amount, GPay, ifscCode, accountNo, accountHolderName } = req.body;
   
   const user = await User.findOne({ userId: userId });
   // check if the withdrawal amount is greater than 0
@@ -90,8 +90,9 @@ router.post('/withdraw/:userId', async (req, res) => {
       userId,
       amount,
       GPay,
-      IfscCode,
+      ifscCode,
       accountNo,
+      accountHolderName
     });
 
     await withdrawalRequest.save();
@@ -123,8 +124,9 @@ router.post('/withdraw/:userId', async (req, res) => {
       userId,
       amount,
       GPay,
-      IfscCode,
+      ifscCode,
       accountNo,
+      accountHolderName
     });
 
     await withdrawalRequest.save();
