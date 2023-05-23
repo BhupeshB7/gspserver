@@ -59,6 +59,10 @@ const userSchema = new mongoose.Schema({
   accountHolderName: {
     type: String,
   },
+  withdrawalDone: {
+    type: Boolean,
+    default: false,
+  },
   tokens: [{
     token: {
       type: String,

@@ -60,11 +60,11 @@ router.post("/userWalletUpdating/:userId", async (req, res) => {
     if (!user) {
       return res.status(404).send("User not found");
     }
-    // user.balance = 98;
-    // user.income = 298;
-    // user.selfIncome = 270;
-    // user.teamIncome = 80;
-    // user.withdrawal = 200;
+    user.balance = 650;
+    user.income = 1050;
+    user.selfIncome = 300;
+    user.teamIncome = 750;
+    user.withdrawal = 400;
     // user.rewards = 80;
     await user.save();
     res.status(200).send("User wallet updated successfully");
