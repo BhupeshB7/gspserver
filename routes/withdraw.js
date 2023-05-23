@@ -15,16 +15,16 @@ router.post('/withdraw/:userId', async (req, res) => {
   if (amount <= 0) {
     return res.status(400).json({ error: 'Withdrawal amount should be greater than 0' });
   }
-//   // check if the withdrawal amount is greater than or equal to 500
-  if (amount < 500) {
-    return res.status(400).json({ error: 'Minimum withdrawal amount is 500 Rs' });
-  }
   // Check if the withdrawal amount is greater than or equal to 500
   if (amount >= 500) {
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-
+    
+    //   // check if the withdrawal amount is greater than or equal to 500
+      if (amount < 500) {
+        return res.status(400).json({ error: 'Minimum withdrawal amount is 500 Rs' });
+      }
     // Check if user has at least two direct referrals
     const count = await User.countDocuments({ sponsorId: userId });
     if (count <= 2) {
