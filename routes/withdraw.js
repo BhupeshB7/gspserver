@@ -132,4 +132,16 @@ router.put('/withdrawals/:id', async (req, res) => {
     res.status(500).json(error);
   }
 });
+
+// Delete a user
+router.delete('/withdrawalWallet/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await WithdrawalReq.findByIdAndDelete({_id:id});
+    res.status(200).send('Deleted successfully'); // Success, no content
+  } catch (error) {
+    // console.error(error);
+    res.status(500).send('something went wrong'); // Internal server error
+  }
+});
 module.exports = router;
