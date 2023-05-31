@@ -89,6 +89,14 @@ activationTime: {
   type: Date,
   default: null
 },
+incomeYesterday: {
+  type: Number,
+  default: 0,
+},
+incomeLastUpdated: {
+  type: Date,
+  default: null,
+},
 date: {Date},
  }, {timestamps: true},
 );

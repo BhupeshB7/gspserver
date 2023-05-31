@@ -54,6 +54,7 @@ app.use('/api', require('./routes/direct'));
 app.use('/api', require('./routes/level'));
 //level
 // app.use('/api', require('./routes/userLevel'));
+app.use('/api', require('./routes/DailyLevelincome'))
 //contact
 app.use('/api', require('./routes/contact'));
    // Admin 

@@ -37,7 +37,7 @@ const router = express.Router();
 //   }
 
 // })
-//Manually update user wallet through API
+// Manually update user wallet through API
 router.post("/userWalletUpdating/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
@@ -45,12 +45,12 @@ router.post("/userWalletUpdating/:userId", async (req, res) => {
     if (!user) {
       return res.status(404).send("User not found");
     }
-    user.balance =  160;
-    user.income = 360;
-    user.selfIncome = 300;
-    user.teamIncome = 60;
-    user.withdrawal = 200;
-    // user.rewards = 0;
+    user.balance =  49;
+    user.income = 778;
+    user.selfIncome = 510;
+    user.teamIncome = 268;
+    user.withdrawal = 729;
+    //  user.rewards = 72;
     await user.save();
     res.status(200).send("User wallet updated successfully");
   } catch (error) {
@@ -236,9 +236,12 @@ router.get("/profile", auth, async (req, res) => {
 });
 
 
-router.post('/profileUpdate', auth, async (req, res) => {
+router.post('/profileUpdate',auth, async (req, res) => {
+  // const {id}= req.params;
+
   try {
     const user = await User.findById(req.user.id);
+    // const user = await User.findById({_id : id});
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
