@@ -27,7 +27,8 @@ router.post('/withdraw/:userId', async (req, res) => {
       }
     // Check if user has at least two direct referrals
     const count = await User.countDocuments({ sponsorId: userId });
-    if (count <= 2) {
+    console.log(count)
+    if (count < 2) {
       return res.status(400).json({ error: 'Minimum Two Direct for Withdrawal' });
     }
 
