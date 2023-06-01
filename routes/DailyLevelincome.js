@@ -42,7 +42,7 @@ const router = express.Router();
 const User = require('../models/User');
 
 // Calculate daily level income for a user
-router.get('/daily-level-income/users/:userId', async (req, res) => {
+router.post('/daily-level-income/users/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
     const user = await User.findOne({userId: userId});
