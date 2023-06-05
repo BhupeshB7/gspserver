@@ -97,40 +97,40 @@ router.get('/depositusers', async (req, res) => {
   };
 });
 
-router.post('/imageUpload', async (req, res) => {
-  try {
-      if (!req.files || !req.files.image) {
-          return res.status(400).send("No file was uploaded.")
-      }
+// router.post('/imageUpload', async (req, res) => {
+//   try {
+//       if (!req.files || !req.files.image) {
+//           return res.status(400).send("No file was uploaded.")
+//       }
 
-      const validateResult = imageValidate(req.files.image)
-      if (validateResult.error) {
-          return res.status(400).send(validateResult.error)
-      }
+//       const validateResult = imageValidate(req.files.image)
+//       if (validateResult.error) {
+//           return res.status(400).send(validateResult.error)
+//       }
 
-      const path = require('path')
-      const uploadDirectory = path.resolve(__dirname, "../../frontend","public","images")
-      const { v4: uuidv4 } = require("uuid")
+//       const path = require('path')
+//       const uploadDirectory = path.resolve(__dirname, "../../frontend","public","images")
+//       const { v4: uuidv4 } = require("uuid")
 
-      let product = await Deposit.findById(req.params.productId).orFail()
-      let image = req.files.image
+//       let product = await Deposit.findById(req.params.productId).orFail()
+//       let image = req.files.image
 
-      var fileName = uuidv4() + path.extname(image.name)
-      var uploadPath = uploadDirectory + "/" + fileName
-      product.image.push({ path: "/images/products/" + fileName })
+//       var fileName = uuidv4() + path.extname(image.name)
+//       var uploadPath = uploadDirectory + "/" + fileName
+//       product.image.push({ path: "/images/products/" + fileName })
 
-      image.mv(uploadPath, function(err) {
-          if (err) {
-              return res.status(500).send(err)
-          }
-      })
+//       image.mv(uploadPath, function(err) {
+//           if (err) {
+//               return res.status(500).send(err)
+//           }
+//       })
 
-      await product.save()
-      return res.send("File uploaded.")
-  } catch(err) {
-      console.log(err)
-  }
-});
+//       await product.save()
+//       return res.send("File uploaded.")
+//   } catch(err) {
+//       console.log(err)
+//   }
+// });
 router.post('/image/:productId', async (req, res) => {
   try {
       if(!req.files || !! req.files.images === false) {
