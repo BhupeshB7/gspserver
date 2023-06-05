@@ -6,7 +6,7 @@ const app = express();
 const profileRoutes = require('./routes/profile');
 const passwordRoute = require('./routes/passwordReset');
 const register = require('./routes/register');
-
+const fileUpload = require("express-fileupload")
 // Connect to MongoDB database
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
@@ -21,8 +21,16 @@ mongoose.connect(process.env.MONGO_URL, {
     // origin:"https://globalsuccesspoint.in"
   }));
   app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
-  app.use('/uploads',express.static('./uploads'))
+  app.use(fileUpload())
+  // app.use(express.urlencoded({ extended: true }));
+  // app.use('/uploads',express.static('./uploads'))
+  
+// Use the uploadRoutes middleware
+// app.use('/upload', require('./routes/depositUser'));
+
+// Serve uploaded images
+// app.use('/uploads', express.static(path.join(__dirname, 'client', 'uploads'))); // Serve the uploads directory within the client folder
+
 // error handler middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
