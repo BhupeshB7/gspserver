@@ -8,9 +8,7 @@ router.post('/user',  async (req, res) => {
   try {
     const { name, transactionId,userID , depositAmount } = req.body;
    
-    // const imagePath = req.file.path;
-
-   
+    // const imagePath = req.file.path;   
  // Check if email already exists
  const transaction = await Deposit.findOne({ transactionId });
  if (transaction) {
@@ -24,62 +22,13 @@ router.post('/user',  async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-// Set up multer for handling image uploads
-// const upload = multer();
 
-// // Create a new deposit record
-// router.post('/deposit',upload.single('image'), async (req, res) => {
-//   try {
-//     const { name, transactionId, userId } = req.body;
-//     // const {base64} = req.body;
-//     const image = req.file ? req.file.buffer.toString('base64') : '';
-//     Images.create({image:base64});
-//     const deposit = new Deposit({
-//       name,
-//       transactionId,
-//       userId,
-//       image
-//     });
-//     await deposit.save();
-//     res.json(deposit);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// });
-
-
-//for get user data
-// router.get('/depositusers', async (req, res) => {
-//     try {
-//       const users = await Deposit.find();
-//       res.json(users);
-//     }
-//      catch (error) {
-//       console.error(error);
-//       res.status(500).json({ message});
-//     };
-// });
-// Endpoint for fetching user data with pagination
-// router.get('/depositusers', async (req, res) => {
-//   try {
-//     const page = parseInt(req.query.page) || 1; // default to page 1
-//     const perPage = 20;
-//     const users = await Deposit.find().skip((page - 1) * perPage).limit(perPage);
-//     res.json(users);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Server error' });
-//   };
-// });
 router.get('/depositusers', async (req, res) => {
   try {
     const searchDepositQuery = req.query.search; // Get the search query parameter from the request
 
     // Use a regular expression to perform a case-insensitive search for the given query
     const searchRegex = new RegExp(searchDepositQuery, 'i');
-    const page = parseInt(req.query.page) || 1; // default to page 1
-    const perPage = 300;
     const totalUsers = await Deposit.countDocuments();
     
     const users = await Deposit.find({
@@ -88,8 +37,7 @@ router.get('/depositusers', async (req, res) => {
         { userID: searchRegex },
         { transactionId: searchRegex }
       ]
-    }).skip((page - 1) * perPage).limit(perPage);
-    res.set('x-total-count', totalUsers);
+    })
     res.json(users);
   } catch (error) {
     console.error(error);
@@ -97,40 +45,6 @@ router.get('/depositusers', async (req, res) => {
   };
 });
 
-// router.post('/imageUpload', async (req, res) => {
-//   try {
-//       if (!req.files || !req.files.image) {
-//           return res.status(400).send("No file was uploaded.")
-//       }
-
-//       const validateResult = imageValidate(req.files.image)
-//       if (validateResult.error) {
-//           return res.status(400).send(validateResult.error)
-//       }
-
-//       const path = require('path')
-//       const uploadDirectory = path.resolve(__dirname, "../../frontend","public","images")
-//       const { v4: uuidv4 } = require("uuid")
-
-//       let product = await Deposit.findById(req.params.productId).orFail()
-//       let image = req.files.image
-
-//       var fileName = uuidv4() + path.extname(image.name)
-//       var uploadPath = uploadDirectory + "/" + fileName
-//       product.image.push({ path: "/images/products/" + fileName })
-
-//       image.mv(uploadPath, function(err) {
-//           if (err) {
-//               return res.status(500).send(err)
-//           }
-//       })
-
-//       await product.save()
-//       return res.send("File uploaded.")
-//   } catch(err) {
-//       console.log(err)
-//   }
-// });
 router.post('/image/:productId', async (req, res) => {
   try {
       if(!req.files || !! req.files.images === false) {
@@ -147,7 +61,7 @@ router.post('/image/:productId', async (req, res) => {
       const uploadDirectory = path.resolve(__dirname, "../../frontend","public","images" )
       const {v4: uuidv4} = require("uuid")
 
-      console.log(req.params.productId)
+      // console.log(req.params.productId)
       let product = await Deposit.findById(req.params.productId)        
         let imagesTable =  []
 
@@ -161,9 +75,9 @@ router.post('/image/:productId', async (req, res) => {
       }
       
       for(let image of imagesTable){
-          console.log(image)
-          console.log(path.extname(image.name))
-          console.log(uuidv4())
+          // console.log(image)
+          // console.log(path.extname(image.name))
+          // console.log(uuidv4())
            var uploadPath = uploadDirectory + "/" + uuidv4() + path.extname(image.name)
           var fileName = uuidv4() + path.extname(image.name)
           var uploadPath = uploadDirectory + "/" + fileName
@@ -177,7 +91,9 @@ router.post('/image/:productId', async (req, res) => {
       await product.save()
       return res.send("files uploaded.")
   } catch(err) {
-      console.log(err)
+      // console.log(err)
+      return res.status(500).json({ error: 'Internal server error' });
+
   }
 })
 router.delete('/delete', async (req, res) => {
@@ -190,61 +106,6 @@ router.delete('/delete', async (req, res) => {
   }
 });
 
-//
-// router.get('/topUpActivate', async (req,res)=>{
-//   try {
-//     const userId= req.body;
-//     const user = await User.findOne(userId).select("userId").orFail();
-//     if(!user){
-//       req.status(400).send("user not found!")
-//     }
-//   } catch (error) {
-//     console.log(error)
-//   }
-// })
-// router.get('/topUpActivate', async (req, res) => {
-//   try {
-//     const userId = req.query.userId; // Assuming the user ID is passed as a query parameter
-
-//     const user = await User.findOne({ userId }).select("userId").lean().exec();
-    
-//     if (!user) {
-//       return res.status(404).send("User not found!");
-//     }
-
-//     // Assuming you have an 'active' property in the User model
-//     if (user.is_active) {
-//       return res.send("User is active");
-//     } else {
-//       return res.send("User is not active");
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(500).send("Internal server error");
-//   }
-// });
-// router.get('/topUpActivate/:userId', async (req, res) => {
-//   try {
-//     const {userId} = req.params; // Assuming the user ID is passed as a query parameter
-//     // const userId = req.params.userId || req.query.userId;
-
-//     const user = await User.findOne({ userId }).select("userId is_active").lean().exec();
-    
-//     if (!user) {
-//       return res.status(404).send("User not found!");
-//     }
-
-//     // Assuming you have an 'active' property in the User model
-//     if (user.is_active) {
-//       return res.send("User is active");
-//     } else {
-//       return res.send("User not found");
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(500).send("Internal server error");
-//   }
-// });
 router.post('/topUpActivate', async (req, res) => {
   try {
     const { userId } = req.body;
@@ -262,8 +123,93 @@ router.post('/topUpActivate', async (req, res) => {
       return res.json({ status: false });
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+const activateUser = async (userId, is_active) => {
+  try {
+    const activationTime = new Date();
+    const is_active = true
+    const updatedUser = await User.findOneAndUpdate(
+      {userId:userId}, // Specify the filter condition for the update
+      // { is_active:is_active},
+     
+{
+is_active: is_active,
+activationTime:activationTime
+},
+      { new: true }
+    );
+    if (updatedUser) {
+      return true; // Activation successful
+    } else {
+      return false; // Failed to update user
+    }
+  } catch (error) {
+    // console.log(error);
+    return false; // Error occurred during activation
+  }
+};
+
+
+// Modify the route handler to use the helper function
+router.post('/topUpUserID/:userID', async (req, res) => {
+  try {
+    const { userID } = req.params;
+    const deposit = await Deposit.findOne({ userID }).select("isApproved").lean().exec();
+
+    if (!deposit) {
+      return res.status(401).send("User not found!");
+    } else if (deposit.isApproved) {
+      const { userId, is_active, activationTime} = req.body;
+      const activeUser = await User.findOne({ userId }).select("userId is_active").lean().exec();     
+        if(activeUser.is_active){
+          return res.status(201).send('user Already Activated!')
+        }
+        const depositUser = await Deposit.findOne({userID})
+        
+        if(depositUser.depositAmount < 800){
+          return res.status(400).json({error:'Low Balance'})
+        }
+      const activationStatus = await activateUser(userId, is_active , activationTime);
+      if (activationStatus) {
+        const { userID } = req.params;
+        const depositUser = await Deposit.findOne({userID})
+       
+          depositUser.depositAmount -=800;
+          depositUser.save();
+          return res.status(201).json({success:'user Activated'});
+        
+      } else {
+        return res.json({error:'Failed to activate user.'});
+      }
+    } else {
+      return res.json({error:'Your Deposit Amount is not Approved!'});
+    }
+  } catch (error) {
+    // console.log(error);
+    return res.status(500).json({error:'An error occurred. Please try again later.'});
+  }
+});
+
+router.patch('/activate/:id', async (req, res) => {
+  try {
+    const userID = req.params.id;
+    const user = await Deposit.findById(userID);
+    if (!user) {
+      return res.status(401).json({ error: 'User not found' });
+    }
+
+    user.isApproved = true;
+    // user.activationTime = new Date();
+    await user.save();
+
+    res.json(user);
+  } catch (error) {
+    // console.log(error);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 

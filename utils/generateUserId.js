@@ -23,7 +23,7 @@ try {
   exports.generateUserId =() => {
     count++;
     const randomNumber = Math.floor(Math.random() * (9999999 - 1000000 + 1) + 1000000);
-    const userID = `GSP23${count.toString().padStart(4, '0')}${randomNumber}`;
+    const userID = `GSP23${count.toString().padStart(2, '0')}${randomNumber}`;
     return userID;
   }
   fs.writeFileSync('count.txt', count.toString(), 'utf8');
