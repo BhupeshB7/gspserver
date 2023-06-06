@@ -89,13 +89,41 @@ activationTime: {
   type: Date,
   default: null
 },
-incomeYesterday: {
+// yesterdayAmount: {
+//   type: Number,
+//   default: function () {
+//     // Set default value to 0 if incomeLastUpdated is not set or if it's not yesterday's date
+//     if (
+//       !this.incomeLastUpdated ||
+//       !isSameDay(this.incomeLastUpdated, new Date(new Date().getTime() - 86400000))
+//     ) {
+//       return this.income;
+//     }
+
+//     // Return the user's income as the default value for incomeYesterday
+//     return this.yesterdayAmount || this.income ;
+//   }
+// },
+yesterdayAmount: {
   type: Number,
-  default: 0,
+  default:0 
+  // function () {
+  //   // Set default value to 0 if incomeLastUpdated is not set or if it's not yesterday's date
+  //   if (
+  //     !this.incomeLastUpdated ||
+  //     !isSameDay(this.incomeLastUpdated, new Date(new Date().getTime() - 86400000))
+  //   ) {
+  //     return 0;
+  //   }
+
+  //   // Return the user's income as the default value for yesterdayAmount
+  //   return this.income;
+  // }
 },
+
 incomeLastUpdated: {
   type: Date,
-  default: null,
+  default: Date.now
 },
 date: {Date},
  }, {timestamps: true},
@@ -107,5 +135,14 @@ date: {Date},
 //     throw new Error(error);
 //   }
 // };
+function isSameDay(date1, date2) {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
+}
+
+
 module.exports = mongoose.model('User', userSchema);
 

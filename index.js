@@ -6,19 +6,20 @@ const app = express();
 const profileRoutes = require('./routes/profile');
 const passwordRoute = require('./routes/passwordReset');
 const register = require('./routes/register');
-const fileUpload = require("express-fileupload")
+const fileUpload = require("express-fileupload");
 // Connect to MongoDB database
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
     .then(() => console.log('Connected to MongoDB'))
+    
     .catch((error) => console.error(error));
   // Middleware
   app.use(cors({
     // origin:"http://localhost:3000"
     // origin:"https://globalsuccesspoint.netlify.app"
-    origin:"https://globalsuccesspoint.in"
+    // origin:"https://globalsuccesspoint.in"
   }));
   app.use(express.json());
   app.use(fileUpload())
