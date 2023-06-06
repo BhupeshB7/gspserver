@@ -212,5 +212,20 @@ router.patch('/activate/:id', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+router.get('/topUpuserAmount/:userID', async (req,res)=>{
+  try {
+    const { userID } = req.params;
+    const deposit = await Deposit.findOne({ userID }).select("userID depositAmount isApproved").lean().exec();
+  
+    if (!deposit) {
+      return res.status(401).send("User not found!");
+    }
 
+    return res.status(201).json({deposit})
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({error:'Internal server error'})
+  }
+   
+})
 module.exports = router;
