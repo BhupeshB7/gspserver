@@ -374,10 +374,10 @@ router.post('/activeuser/:userId', async (req, res) => {
 // API route to get a user's sponsors
 router.get('/sponsors', async (req, res) => {
   try {
-    const { userID:userId } = req.query;
+    const {userId } = req.query;
 
     // Find the user's sponsor
-    const user = await User.findOne({ userID: userId }).select('activationTime createdAt name usesrId income balance withdrawal selfIncome teamIncome rewards accountNo ifscCode GPay');
+    const user = await User.findOne({userId }).select('activationTime createdAt name usesrId income balance withdrawal selfIncome teamIncome rewards accountNo ifscCode GPay');
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
