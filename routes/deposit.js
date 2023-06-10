@@ -3,6 +3,7 @@ const router = express.Router();
 const Deposit = require('../models/Deposit');
 const imageValidate = require('../utils/imageValidate');
 const User = require('../models/User');
+const Topup = require('../models/Topup');
 
 router.post('/user',  async (req, res) => {
   try {
@@ -165,20 +166,21 @@ router.post('/topUpUserID/:userID', async (req, res) => {
     } else if (deposit.isApproved) {
       const { userId, is_active, activationTime} = req.body;
       const activeUser = await User.findOne({ userId }).select("userId is_active").lean().exec();     
-        if(activeUser.is_active){
-          return res.status(201).send('user Already Activated!')
-        }
-        const depositUser = await Deposit.findOne({userID})
-        
-        if(depositUser.depositAmount < 800){
-          return res.status(400).json({error:'Low Balance'})
-        }
+      if(activeUser.is_active){
+        return res.status(201).send('user Already Activated!')
+      }
+      const depositUser = await Deposit.findOne({userID})
+      
+      if(depositUser.depositAmount < 800){
+        return res.status(400).json({error:'Low Balance'})
+      }
       const activationStatus = await activateUser(userId, is_active , activationTime);
       if (activationStatus) {
         const { userID } = req.params;
-        const depositUser = await Deposit.findOne({userID})
-       
+        const depositUser = await Deposit.findOne({userID})    
           depositUser.depositAmount -=800;
+          // const  topupUser = new Topup({userID:userID,depositAmount:depositAmount, ActivationTime:activationTime }); 
+          // topupUser.save();
           depositUser.save();
           return res.status(201).json({success:'user Activated'});
         

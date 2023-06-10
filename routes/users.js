@@ -38,19 +38,31 @@ const router = express.Router();
 
 // })
 // Manually update user wallet through API
-router.post("/userWalletUpdating/:userId", async (req, res) => {
-  const { userId } = req.params;
+router.post("/userWalletUpdating/", async (req, res) => {
+  const { userId } = req.body;
   try {
-    let user = await User.findOne({ userId: userId });
+    let user = await User.findOne({ userId: userId }).select('userId');
     if (!user) {
       return res.status(404).send("User not found");
     }
-    user.balance =  318;
-    user.income = 718;
-    user.selfIncome = 570;
-    user.teamIncome = 148;
-    user.withdrawal = 400;
-    //  user.rewards = 50;
+    if (req.body.balance) {
+      user.balance = req.body.balance.trim();
+    }
+    if (req.body.income) {
+      user.income = req.body.income.trim();
+    }
+    if (req.body.selfIncome) {
+      user.selfIncome = req.body.selfIncome.trim();
+    }
+    if (req.body.teamIncome) {
+      user.teamIncome = req.body.teamIncome.trim();
+    }
+    if (req.body.withdrawal) {
+      user.withdrawal = req.body.withdrawal.trim();
+    }
+    if (req.body.rewards) {
+      user.rewards = req.body.rewards.trim();
+    }
     await user.save();
     res.status(200).send("User wallet updated successfully");
   } catch (error) {
@@ -360,12 +372,12 @@ router.post('/activeuser/:userId', async (req, res) => {
 });
 
 // API route to get a user's sponsors
-router.get('/sponsors/:userId/', async (req, res) => {
+router.get('/sponsors', async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { userID:userId } = req.query;
 
     // Find the user's sponsor
-    const user = await User.findOne({ userId });
+    const user = await User.findOne({ userID: userId }).select('activationTime createdAt name usesrId income balance withdrawal selfIncome teamIncome rewards accountNo ifscCode GPay');
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
