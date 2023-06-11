@@ -230,4 +230,36 @@ router.get('/topUpuserAmount/:userID', async (req,res)=>{
   }
    
 })
+
+// router.delete('/delete/:id', async (req, res)=>{
+//   try {
+//     const {id} = req.params;
+//     const depositDelete = await Deposit.findById({_id:id})
+//     if(!depositDelete){
+//       return res.status(401).send("User not found!");
+//     }
+//     await depositDelete.save();
+//   } catch (error) {
+//     res.status(500).send(error)
+//     console.log(error)
+//   }
+// })
+
+router.delete('/delete/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const depositDelete = await Deposit.findById(id);
+
+    if (!depositDelete) {
+      return res.status(401).send("Deposit not found!");
+    }
+
+    await Deposit.deleteOne({ _id: id });
+    res.status(200).send("Deposit deleted successfully!");
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+});
+
 module.exports = router;
